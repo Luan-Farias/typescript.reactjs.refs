@@ -1,26 +1,42 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useRef, useCallback, FormEvent } from 'react';
+import Input from './components/Input';
+import Modal, { ModalHandles } from './components/Modal';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const nameInputRef = useRef<HTMLInputElement>(null);
+    const acceptTermsRef = useRef({ value: false });
+    const modalRef = useRef<ModalHandles>(null);
+
+    const handleSubmit = useCallback((e: FormEvent) => {
+        e.preventDefault();
+
+        console.log(nameInputRef.current?.value);
+        console.log(acceptTermsRef.current.value);
+    }, []);
+
+    const handleAcceptTerms = useCallback(() => {
+        acceptTermsRef.current.value = !acceptTermsRef.current.value;
+    }, []);
+
+    const handleOpenModal = useCallback(() => {
+        modalRef.current?.openModal();
+    }, []);
+
+    return (
+        <div className="App">
+            <form>
+                <Input name="name" label="Digite o seu nome" placeholder="Name" ref={nameInputRef} />
+
+                <button type="button" onClick={handleAcceptTerms}>Aceitar termos</button>
+
+                <button onClick={handleSubmit}>Realizar foco</button>
+            </form>
+
+            <button onClick={handleOpenModal}>Abrir Modal</button>
+
+            <Modal ref={modalRef} />
+        </div>
+    );
 }
 
 export default App;
